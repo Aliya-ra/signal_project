@@ -1,5 +1,6 @@
 package com.data_management;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,13 @@ public class DataStorage {
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
-    public DataStorage() {
+    public DataStorage(DataReader reader) {
         this.patientMap = new HashMap<>();
+        try {
+            reader.readData(this); //  auto-load data
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -84,8 +90,8 @@ public class DataStorage {
      */
     public static void main(String[] args) {
         // DataReader is not defined in this scope, should be initialized appropriately.
-        // DataReader reader = new SomeDataReaderImplementation("path/to/data");
-        DataStorage storage = new DataStorage();
+        DataReader reader = new FileDataReader("path/to/data");
+        DataStorage storage = new DataStorage(reader);
 
         // Assuming the reader has been properly initialized and can read data into the
         // storage
