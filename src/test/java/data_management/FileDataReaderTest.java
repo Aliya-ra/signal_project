@@ -21,7 +21,7 @@ public class FileDataReaderTest {
         String content = "Patient ID: 1, Timestamp: 1743760000000, Label: ECG, Data: 0.5";
         Files.write(testFile, content.getBytes());
 
-        DataStorage storage = new DataStorage(dataStorage -> new FileDataReader(tempDir.toString()).readData(dataStorage));
+        DataStorage storage = DataStorage.forceNewInstance(new FileDataReader(tempDir.toString()));
 
         List<PatientRecord> records = storage.getRecords(1, 0, Long.MAX_VALUE);
         assertEquals(1, records.size());
@@ -36,7 +36,8 @@ public class FileDataReaderTest {
         String content = "This is not a valid record line";
         Files.write(testFile, content.getBytes());
 
-        DataStorage storage = new DataStorage(dataStorage -> new FileDataReader(tempDir.toString()).readData(dataStorage));
+        DataStorage storage = DataStorage.forceNewInstance(new FileDataReader(tempDir.toString()));
+
         List<PatientRecord> records = storage.getRecords(1, 0, Long.MAX_VALUE);
         assertEquals(0, records.size());
     }
@@ -49,7 +50,8 @@ public class FileDataReaderTest {
         String content = "Patient ID: 1, Timestamp: 1743760000000, Label: Alert, Data: resolved";
         Files.write(testFile, content.getBytes());
 
-        DataStorage storage = new DataStorage(dataStorage -> new FileDataReader(tempDir.toString()).readData(dataStorage));
+        DataStorage storage = DataStorage.forceNewInstance(new FileDataReader(tempDir.toString()));
+
         List<PatientRecord> records = storage.getRecords(1, 0, Long.MAX_VALUE);
         assertEquals(1, records.size());
         assertEquals("Alert", records.get(0).getRecordType());

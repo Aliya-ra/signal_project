@@ -17,7 +17,9 @@ class AlertGeneratorTest {
 
     @Test
     void testCriticalDiastolicAlertTriggered() {
-        DataStorage storage = new DataStorage(testReader);
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
+        
         Patient patient = new Patient(1);
         patient.addRecord(130.0, "DiastolicPressure", System.currentTimeMillis());
         storage.addPatient(1, patient);
@@ -32,7 +34,9 @@ class AlertGeneratorTest {
 
     @Test
     void testHypotensiveHypoxemiaAlertTriggered() {
-        DataStorage storage = new DataStorage(testReader);
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
+
         Patient patient = new Patient(2);
         long now = System.currentTimeMillis();
 
@@ -57,7 +61,9 @@ class AlertGeneratorTest {
     @Test
     void testRapidOxygenDropAlertTriggered() {
         DataReader dummyReader = ds -> {};
-        DataStorage storage = new DataStorage(dummyReader);
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
+
         Patient patient = new Patient(4);
 
         long t1 = System.currentTimeMillis();
@@ -81,7 +87,9 @@ class AlertGeneratorTest {
     @Test
     void testSystolicTrendAlertTriggered() {
         DataReader dummyReader = ds -> {};
-        DataStorage storage = new DataStorage(dummyReader);
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
+
         Patient patient = new Patient(3);
 
         long t = System.currentTimeMillis();
@@ -105,7 +113,9 @@ class AlertGeneratorTest {
     void testECGSpikeAlertTriggered() {
 
         DataReader dummyReader = ds -> {};
-        DataStorage storage = new DataStorage(dummyReader);
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
+
         Patient patient = new Patient(5);
         long now = System.currentTimeMillis();
 
@@ -134,7 +144,9 @@ class AlertGeneratorTest {
     @Test
     void testManualAlertTriggered() {
         DataReader dummyReader = ds -> {};
-        DataStorage storage = new DataStorage(dummyReader);
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
+
         Patient patient = new Patient(6);
 
         patient.addRecord(1.0, "Alert", System.currentTimeMillis()); // Value is irrelevant

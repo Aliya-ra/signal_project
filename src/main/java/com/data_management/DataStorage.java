@@ -14,19 +14,53 @@ import com.alerts.AlertGenerator;
  * patient IDs.
  */
 public class DataStorage {
+    private static DataStorage instance; // Singleton instance
     private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
 
     /**
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
-    public DataStorage(DataReader reader) {
+    private DataStorage(DataReader reader) {
         this.patientMap = new HashMap<>();
         try {
-            reader.readData(this); //  auto-load data
+            reader.readData(this); // auto-load data
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Returns the singleton instance of DataStorage. Initializes it with a default
+     * reader if needed.
+     *
+     * @return the singleton instance
+     */
+    public static DataStorage getInstance() {
+        if (instance == null) {
+            String path = "output";
+            DataReader reader = new FileDataReader(path);
+            instance = new DataStorage(reader);
+        }
+        return instance;
+    }
+
+    /**
+     * Forces a new instance of DataStorage. Useful for test scenarios.
+     *
+     * @param reader the DataReader to initialize with
+     * @return a new instance replacing the previous one
+     */
+    public static DataStorage forceNewInstance(DataReader reader) {
+        instance = new DataStorage(reader);
+        return instance;
+    }
+
+    /**
+     * Clears all stored patient data.
+     */
+    public void reset() {
+        patientMap.clear();
     }
 
     /**
@@ -82,15 +116,6 @@ public class DataStorage {
     }
 
     /**
-     * The main method for the DataStorage class.
-     * Initializes the system, reads data into storage, and continuously monitors
-     * and evaluates patient data.
-     * 
-     * @param args command line arguments
-     */
-
-
-    /**
      * Adds a new patient to the storage.
      * If the patient already exists, it will be updated with the new data.
      *
@@ -101,20 +126,16 @@ public class DataStorage {
         patientMap.put(id, patient);
     }
 
-
-
+    /**
+     * The main method for the DataStorage class.
+     * Initializes the system, reads data into storage, and continuously monitors
+     * and evaluates patient data.
+     *
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
-        // DataReader is not defined in this scope, should be initialized appropriately.
-        String path = "output"; 
-        DataReader reader = new FileDataReader(path);
+        DataStorage storage = DataStorage.getInstance();
 
-        DataStorage storage = new DataStorage(reader);
-
-        // Assuming the reader has been properly initialized and can read data into the
-        // storage
-        // reader.readData(storage);
-
-        // Example of using DataStorage to retrieve and print records for a patient
         List<PatientRecord> records = storage.getRecords(1, 1700000000000L, 1800000000000L);
         for (PatientRecord record : records) {
             System.out.println("Record for Patient ID: " + record.getPatientId() +
@@ -123,10 +144,8 @@ public class DataStorage {
                     ", Timestamp: " + record.getTimestamp());
         }
 
-        // Initialize the AlertGenerator with the storage
         AlertGenerator alertGenerator = new AlertGenerator(storage);
 
-        // Evaluate all patients' data to check for conditions that may trigger alerts
         for (Patient patient : storage.getAllPatients()) {
             alertGenerator.evaluateData(patient);
         }

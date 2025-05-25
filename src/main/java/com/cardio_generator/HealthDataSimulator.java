@@ -34,10 +34,29 @@ import java.util.ArrayList;
  */
 public class HealthDataSimulator {
 
+    public static HealthDataSimulator instance; // Singleton instance
+
     private static int patientCount = 50; // Default number of patients
     private static ScheduledExecutorService scheduler;
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
     private static final Random random = new Random();
+
+
+
+    private HealthDataSimulator() {
+        // Private constructor to prevent instantiation
+        scheduler = Executors.newScheduledThreadPool(patientCount);
+        outputStrategy = new ConsoleOutputStrategy();
+    }
+
+    public static HealthDataSimulator getInstance() {
+        if (instance == null) {
+            instance = new HealthDataSimulator();
+        }
+        return instance;
+    }
+
+
 
     /**
      * The starting point for this class. Parses the commands, then 
@@ -48,15 +67,14 @@ public class HealthDataSimulator {
      * @throws IOException if an IO error occurs
      */
     public static void main(String[] args) throws IOException {
-
         parseArguments(args);
 
-        scheduler = Executors.newScheduledThreadPool(patientCount * 4);
+        HealthDataSimulator simulator = HealthDataSimulator.getInstance();
 
         List<Integer> patientIds = initializePatientIds(patientCount);
         Collections.shuffle(patientIds); // Randomize the order of patient IDs
 
-        scheduleTasksForPatients(patientIds);
+        simulator.scheduleTasksForPatients(patientIds); 
     }
 
     /**
@@ -168,7 +186,7 @@ public class HealthDataSimulator {
      * the method {@link #scheduleTask}.
      * @param patientIds the list of patient Ids 
      */
-    private static void scheduleTasksForPatients(List<Integer> patientIds) {
+    private void scheduleTasksForPatients(List<Integer> patientIds) {
         ECGDataGenerator ecgDataGenerator = new ECGDataGenerator(patientCount);
         BloodSaturationDataGenerator bloodSaturationDataGenerator = new BloodSaturationDataGenerator(patientCount);
         BloodPressureDataGenerator bloodPressureDataGenerator = new BloodPressureDataGenerator(patientCount);

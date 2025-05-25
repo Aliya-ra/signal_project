@@ -16,7 +16,6 @@ class DataStorageTest {
 
     @Test
     void testAddAndGetRecords() throws IOException {
-        // TODO Perhaps you can implement a mock data reader to mock the test data?
         // DataReader reader
         DataReader reader = new DataReader() {
             @Override
@@ -25,10 +24,7 @@ class DataStorageTest {
                 storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
             }
         };
-        DataStorage storage = new DataStorage(reader);
-
-//        storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
-//        storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
+        DataStorage storage = DataStorage.forceNewInstance(reader);
 
         List<PatientRecord> records = storage.getRecords(1, 1714376789050L, 1714376789051L);
         assertEquals(2, records.size()); // Check if two records are retrieved
@@ -38,7 +34,8 @@ class DataStorageTest {
 
     @Test
     void testTimeFiltering() {
-        DataStorage storage = new DataStorage(dataStorage -> {});
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
 
         storage.addPatientData(3, 88.0, "ECG", 1000L);
         storage.addPatientData(3, 89.0, "ECG", 2000L);
@@ -52,7 +49,8 @@ class DataStorageTest {
 
     @Test
     void testGetAllPatients() {
-        DataStorage storage = new DataStorage(dataStorage -> {});
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
 
         storage.addPatientData(1, 90.0, "SystolicPressure", 1000L);
         storage.addPatientData(2, 75.0, "DiastolicPressure", 1000L);
@@ -64,7 +62,8 @@ class DataStorageTest {
 
      @Test
     void testAddMultipleRecordsSamePatient() {
-        DataStorage storage = new DataStorage(dataStorage -> {});
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
 
         storage.addPatientData(2, 80.0, "DiastolicPressure", 1000L);
         storage.addPatientData(2, 85.0, "DiastolicPressure", 2000L);
@@ -76,7 +75,8 @@ class DataStorageTest {
 
     @Test
     void testAddAndRetrieveSingleRecord() {
-        DataStorage storage = new DataStorage(dataStorage -> {}); // no-op reader
+        DataStorage storage = DataStorage.getInstance();
+        storage.reset();
 
         storage.addPatientData(1, 120.0, "SystolicPressure", 1000L);
         List<PatientRecord> records = storage.getRecords(1, 0, Long.MAX_VALUE);
