@@ -88,9 +88,26 @@ public class DataStorage {
      * 
      * @param args command line arguments
      */
+
+
+    /**
+     * Adds a new patient to the storage.
+     * If the patient already exists, it will be updated with the new data.
+     *
+     * @param id      the unique identifier for the patient
+     * @param patient the Patient object containing the patient's data
+     */
+    public void addPatient(int id, Patient patient) {
+        patientMap.put(id, patient);
+    }
+
+
+
     public static void main(String[] args) {
         // DataReader is not defined in this scope, should be initialized appropriately.
-        DataReader reader = new FileDataReader("path/to/data");
+        String path = "output"; 
+        DataReader reader = new FileDataReader(path);
+
         DataStorage storage = new DataStorage(reader);
 
         // Assuming the reader has been properly initialized and can read data into the
