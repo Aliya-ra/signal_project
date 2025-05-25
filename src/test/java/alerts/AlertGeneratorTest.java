@@ -151,4 +151,36 @@ class AlertGeneratorTest {
         assertTrue(conditions.stream().anyMatch(c -> c.contains("Manual Alert Triggered")));
     }
 
+     @Test
+    void testPriorityDecoratorAddsTag() {
+        Alert base = new Alert("123", "Low Oxygen Saturation", 1000L);
+        Alert decorated = new PriorityAlertDecorator(base);
+
+        assertEquals("123", decorated.getPatientId());
+        assertEquals("[PRIORITY] Low Oxygen Saturation", decorated.getCondition());
+        assertEquals(1000L, decorated.getTimestamp());
+    }
+
+
+     @Test
+    void testRepeatedDecoratorAddsSuffix() {
+        Alert base = new Alert("456", "ECG Spike Detected", 2000L);
+        Alert decorated = new RepeatedAlertDecorator(base, 3);
+
+        assertEquals("456", decorated.getPatientId());
+        assertEquals("ECG Spike Detected (Repeated 3x)", decorated.getCondition());
+        assertEquals(2000L, decorated.getTimestamp());
+    }
+
+
+    @Test
+    void testCombinedDecorator() {
+        Alert base = new Alert("789", "Critical Diastolic", 3000L);
+        Alert decorated = new PriorityAlertDecorator(new RepeatedAlertDecorator(base, 2));
+
+        assertEquals("789", decorated.getPatientId());
+        assertEquals("[PRIORITY] Critical Diastolic (Repeated 2x)", decorated.getCondition());
+        assertEquals(3000L, decorated.getTimestamp());
+    }
+
 }

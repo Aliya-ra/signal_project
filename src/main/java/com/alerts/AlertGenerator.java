@@ -2,7 +2,11 @@ package com.alerts;
 
 import java.util.*;
 
-import com.alerts.alertFactories.*;
+import com.alerts.alertFactories.AlertFactory;
+import com.alerts.alertFactories.BloodOxygenAlertFactory;
+import com.alerts.alertFactories.BloodPressureAlertFactory;
+import com.alerts.alertFactories.DefaultAlertFactory;
+import com.alerts.alertFactories.ECGAlertFactory;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
@@ -25,7 +29,6 @@ public class AlertGenerator {
         BloodPressureStrategy bpStrategy = new BloodPressureStrategy();
         strategyMap.put("SystolicPressure", bpStrategy);
         strategyMap.put("DiastolicPressure", bpStrategy);
-
         strategyMap.put("OxygenSaturation", new OxygenSaturationStrategy());
         strategyMap.put("ECG", new HeartRateStrategy());
     }
@@ -66,19 +69,24 @@ public class AlertGenerator {
         }
     }
 
-    //Helper method to evaluate manual alert types
+    /**
+     * Helper method to evaluate manual alert types.
+     */
     private void evaluateManual(Patient patient, PatientRecord record) {
         String type = record.getRecordType();
         if (type.equals("Alert") || type.equals("ManualAlert")) {
-            triggerAlert(defaultFactory.createAlert(
+            Alert base = defaultFactory.createAlert(
                 String.valueOf(patient.getPatientId()),
                 "Manual Alert Triggered",
                 record.getTimestamp()
-            ));
+            );
+            triggerAlert(new PriorityAlertDecorator(new RepeatedAlertDecorator(base, 2)));
         }
     }
 
-    //Helper method to trigger a combined alert when systolic pressure and oxygen levels are both low 
+    /**
+     * Helper method to trigger a combined alert when systolic pressure and oxygen levels are both low.
+     */
     private void evaluateCombined(Patient patient, PatientRecord record) {
         if (!record.getRecordType().equals("SystolicPressure") || record.getMeasurementValue() >= 90) return;
 
@@ -91,26 +99,33 @@ public class AlertGenerator {
         }
 
         if (latestOxygen < 92) {
-            triggerAlert(defaultFactory.createAlert(
+            Alert base = defaultFactory.createAlert(
                 String.valueOf(patient.getPatientId()),
                 "Hypotensive Hypoxemia (Sys < 90 & Oxy < 92)",
                 record.getTimestamp()
-            ));
+            );
+            triggerAlert(new PriorityAlertDecorator(new RepeatedAlertDecorator(base, 2)));
         }
     }
 
-    // Checks if the last three values in a list show a consistent increasing or decreasing trend
+    /**
+     * Checks if the last three values in a list show a consistent increasing or decreasing trend
+     */
     private boolean isConsistentTrend(List<Double> values) {
         return (values.get(1) - values.get(0) > 10 && values.get(2) - values.get(1) > 10) ||
                (values.get(0) - values.get(1) > 10 && values.get(1) - values.get(2) > 10);
     }
 
-    // Triggers an alert for the monitoring system
+    /**
+     * Triggers an alert
+     */
     private void triggerAlert(Alert alert) {
         triggeredAlerts.add(alert);
     }
 
-    // Returns all alerts that were triggered during evaluation
+    /**
+     * Returns all alerts that were triggered
+     */
     public List<Alert> getTriggeredAlerts() {
         return triggeredAlerts;
     }
