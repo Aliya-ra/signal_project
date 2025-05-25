@@ -68,6 +68,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 The UML Class Diagrams for this project can be found in [uml_models](./uml_models). The struture for classes and interfaces, and the relationships between them are demonstraited in the diagrams. Also, there is a file [DiagramExplanations](./uml_models/DiagramExplanations.md) which contains the explanation for each of the 4 subsystems of this project.
 
+## How To Run
+In order to test the Websocket related functionalities, you need to first run the data on 8080 port. If you are using Windows, you can simply run the [run_generator_on_8080.bat](run_generator_on_8080.bat) in the root of the project.
+Then the program will use that port to catch the simulated data over WebSocket.
 
 ## Project Members
 - Student ID: 6368475
