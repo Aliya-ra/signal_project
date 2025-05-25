@@ -2,7 +2,7 @@ package data_management;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.data_management.DataReader;
+import com.data_management.BatchDataReader;
 import org.junit.jupiter.api.Test;
 
 import com.data_management.DataStorage;
@@ -17,7 +17,7 @@ class DataStorageTest {
     @Test
     void testAddAndGetRecords() throws IOException {
         // DataReader reader
-        DataReader reader = new DataReader() {
+        BatchDataReader reader = new BatchDataReader() {
             @Override
             public void readData(DataStorage storage) {
                 storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);

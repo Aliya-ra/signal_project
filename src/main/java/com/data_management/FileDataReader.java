@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.stream.Stream;
 
-public class FileDataReader implements DataReader {
+public class FileDataReader implements BatchDataReader {
     private final String directory;
 
     public FileDataReader(String directory) {
@@ -67,5 +67,6 @@ public class FileDataReader implements DataReader {
             System.err.println("Error reading file: " + path);
         }
     }
+
 
 }

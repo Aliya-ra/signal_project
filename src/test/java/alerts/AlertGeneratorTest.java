@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AlertGeneratorTest {
 
-    DataReader testReader = dataStorage -> {
+    BatchDataReader testReader = dataStorage -> {
         // Do nothing; we'll insert patients manually in each test
     };
 
@@ -60,7 +60,7 @@ class AlertGeneratorTest {
 
     @Test
     void testRapidOxygenDropAlertTriggered() {
-        DataReader dummyReader = ds -> {};
+        BatchDataReader dummyReader = ds -> {};
         DataStorage storage = DataStorage.getInstance();
         storage.reset();
 
@@ -86,7 +86,7 @@ class AlertGeneratorTest {
 
     @Test
     void testSystolicTrendAlertTriggered() {
-        DataReader dummyReader = ds -> {};
+        BatchDataReader dummyReader = ds -> {};
         DataStorage storage = DataStorage.getInstance();
         storage.reset();
 
@@ -112,7 +112,7 @@ class AlertGeneratorTest {
     @Test
     void testECGSpikeAlertTriggered() {
 
-        DataReader dummyReader = ds -> {};
+        BatchDataReader dummyReader = ds -> {};
         DataStorage storage = DataStorage.getInstance();
         storage.reset();
 
@@ -143,7 +143,7 @@ class AlertGeneratorTest {
 
     @Test
     void testManualAlertTriggered() {
-        DataReader dummyReader = ds -> {};
+        BatchDataReader dummyReader = ds -> {};
         DataStorage storage = DataStorage.getInstance();
         storage.reset();
 

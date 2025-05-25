@@ -71,4 +71,9 @@ public class Patient {
     public int getPatientId() {
         return patientId;
     }
+
+    public List<PatientRecord> getRecords() {
+        return patientRecords;
+    }
+
 }

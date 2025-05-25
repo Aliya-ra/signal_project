@@ -2,7 +2,7 @@ package com.data_management;
 
 import java.io.IOException;
 
-public interface DataReader {
+public interface BatchDataReader {
     /**
      * Reads data from a specified source and stores it in the data storage.
      * 
@@ -10,4 +10,6 @@ public interface DataReader {
      * @throws IOException if there is an error reading the data
      */
     void readData(DataStorage dataStorage) throws IOException;
+
+
 }

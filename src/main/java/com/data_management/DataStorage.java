@@ -21,7 +21,7 @@ public class DataStorage {
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
-    private DataStorage(DataReader reader) {
+    private DataStorage(BatchDataReader reader) {
         this.patientMap = new HashMap<>();
         try {
             reader.readData(this); // auto-load data
@@ -39,7 +39,7 @@ public class DataStorage {
     public static DataStorage getInstance() {
         if (instance == null) {
             String path = "output";
-            DataReader reader = new FileDataReader(path);
+            BatchDataReader reader = new FileDataReader(path);
             instance = new DataStorage(reader);
         }
         return instance;
@@ -51,7 +51,7 @@ public class DataStorage {
      * @param reader the DataReader to initialize with
      * @return a new instance replacing the previous one
      */
-    public static DataStorage forceNewInstance(DataReader reader) {
+    public static DataStorage forceNewInstance(BatchDataReader reader) {
         instance = new DataStorage(reader);
         return instance;
     }
@@ -150,4 +150,23 @@ public class DataStorage {
             alertGenerator.evaluateData(patient);
         }
     }
+
+
+    /**
+     * Clears all stored patient data.
+     */
+    public void clearAllData() {
+        patientMap.clear();
+    }
+
+    /**
+     * Retrieves a patient by their unique identifier.
+     *
+     * @param patientId the unique identifier of the patient
+     * @return the Patient object if found, null otherwise
+     */
+    public Patient getPatient(int patientId) {
+        return patientMap.get(patientId);
+    }
+
 }
